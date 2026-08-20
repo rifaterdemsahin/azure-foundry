@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Azure VPS (Auto-Stop VM + AGY/Grok) vs. Azure AI Foundry</title>
+  <style>
+    :root {
+      --primary: #0078d4;
+      --primary-dark: #005a9e;
+      --accent: #50e6ff;
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --code-bg: #0b1120;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 0;
+    }
+
+    header {
+      background: linear-gradient(135deg, #002050 0%, #0078d4 100%);
+      padding: 3rem 2rem;
+      border-bottom: 1px solid var(--card-border);
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      margin-bottom: 0.75rem;
+      color: #fff;
+    }
+
+    header p {
+      color: #cbd5e1;
+      font-size: 1.1rem;
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    nav {
+      background: #0b1120;
+      padding: 0.75rem 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    nav a {
+      color: var(--accent);
+      font-weight: 500;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .card h2 {
+      color: var(--accent);
+      font-size: 1.6rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card h3 {
+      color: #e2e8f0;
+      font-size: 1.2rem;
+      margin: 1.2rem 0 0.5rem;
+    }
+
+    p, ul, ol {
+      margin-bottom: 1rem;
+      color: #cbd5e1;
+    }
+
+    ul, ol {
+      padding-left: 1.5rem;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .feature-box {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+
+    .feature-box h4 {
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      border: 1px solid var(--card-border);
+      padding: 0.85rem 1rem;
+      text-align: left;
+    }
+
+    th {
+      background: #0b1120;
+      color: var(--accent);
+    }
+
+    tr:nth-child(even) {
+      background: rgba(15, 23, 42, 0.4);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-right: 0.3rem;
+    }
+
+    .badge-green { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .badge-yellow { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+    .badge-blue { background: rgba(0, 120, 212, 0.2); color: #60a5fa; border: 1px solid rgba(0, 120, 212, 0.4); }
+    .badge-red { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+
+    .callout {
+      border-left: 4px solid var(--primary);
+      background: rgba(0, 120, 212, 0.1);
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.25rem 0;
+    }
+
+    .callout.info {
+      border-left-color: var(--accent);
+      background: rgba(80, 230, 255, 0.1);
+    }
+
+    .callout.warning {
+      border-left-color: var(--warning);
+      background: rgba(245, 158, 11, 0.1);
+    }
+
+    .cost-highlight {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0.5rem 0;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--card-border);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Azure Auto-Stop VPS vs. Azure AI Foundry</h1>
+    <p>Cost and feature showdown: Self-hosting AGY & Grok on an Azure Virtual Machine (with auto-shutdown) vs. Serverless Azure AI Foundry agent infrastructure.</p>
+  </header>
+
+  <nav>
+    <a href="index.html">&larr; Overview & Cost Architecture</a>
+    <a href="foundry-vs-local-agents.html">Foundry vs. Local Agents</a>
+    <a href="azure-vps-vs-foundry.html" style="font-weight: bold; color: #fff;">Azure VPS vs. Foundry</a>
+    <a href="https://github.com/rifaterdemsahin/azure-foundry" target="_blank">GitHub Repo</a>
+  </nav>
+
+  <div class="container">
+
+    <!-- Section 1: Concept & Architectures -->
+    <section class="card">
+      <h2>1. The Two Architectural Setups</h2>
+      <div class="grid-2">
+        <div class="feature-box">
+          <h4>🖥️ Option A: Azure Linux VPS + Auto-Stop</h4>
+          <p>
+            You spin up an Azure Virtual Machine (e.g. <code>Standard_B2s</code> or <code>Standard_D4s_v5</code> Linux VM), install <strong>Antigravity CLI (AGY)</strong> and configure your <strong>xAI / Grok / Gemini API keys</strong>. You configure Azure <em>Auto-Shutdown</em> (e.g., stops every day at 7 PM or after idle time) and start it on-demand via Azure CLI/Portal.
+          </p>
+        </div>
+        <div class="feature-box">
+          <h4>☁️ Option B: Managed Azure AI Foundry</h4>
+          <p>
+            You use <strong>Azure AI Foundry + Agent Service</strong>. Completely serverless. There is no VM to provision, patch, start, or stop. Models (GPT-4o, DeepSeek, Phi-4, Grok/Llama via Model-as-a-Service) and conversation threads execute purely on-demand per request.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Cost Breakdown & Comparison -->
+    <section class="card">
+      <h2>2. Cost Comparison: Azure VPS (Auto-Stop) vs. Foundry</h2>
+
+      <p>
+        Let's compare typical monthly costs under two realistic usage patterns: <strong>Part-Time Developer (40 hours/mo)</strong> and <strong>24/7 Production Workload (730 hours/mo)</strong>.
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Cost Component</th>
+            <th>Azure VPS (Auto-Stop, ~40 hrs/mo)</th>
+            <th>Azure VPS (24/7 Always On)</th>
+            <th>Azure AI Foundry (Serverless)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Compute / VM Instance</strong><br/><small>(e.g. Standard_B2s: 2 vCPU, 4GB RAM)</small></td>
+            <td><span class="badge badge-green">~$1.68 / mo</span><br/>($0.0416/hr &times; 40 hrs)</td>
+            <td><span class="badge badge-yellow">~$30.37 / mo</span><br/>($0.0416/hr &times; 730 hrs)</td>
+            <td><span class="badge badge-green">$0.00 compute fee</span><br/>(Pure serverless; $0 when idle)</td>
+          </tr>
+          <tr>
+            <td><strong>OS Disk Storage (Managed Disk)</strong><br/><small>(64GB Standard SSD P6)</small></td>
+            <td><span class="badge badge-yellow">~$4.80 / mo</span><br/>(Disk is billed 24/7 even when VM is deallocated!)</td>
+            <td><span class="badge badge-yellow">~$4.80 / mo</span></td>
+            <td><span class="badge badge-green">~$0.10 / mo</span><br/>(Azure Blob pay-per-MB stored)</td>
+          </tr>
+          <tr>
+            <td><strong>Public IP & Network Egress</strong></td>
+            <td><span class="badge badge-yellow">~$1.50 / mo</span> (Dynamic IP when stopped)</td>
+            <td><span class="badge badge-yellow">~$3.60 / mo</span> (Static IP)</td>
+            <td><span class="badge badge-green">$0.00</span> (Included in endpoint)</td>
+          </tr>
+          <tr>
+            <td><strong>AI Token Consumption</strong><br/><small>(Grok / OpenAI / Gemini APIs)</small></td>
+            <td><strong>Pay-as-you-go</strong> directly to xAI / Gemini API (~$5–$20/mo depending on tokens)</td>
+            <td><strong>Pay-as-you-go</strong> directly to xAI / Gemini API (~$5–$20/mo)</td>
+            <td><strong>Pay-as-you-go</strong> via Azure AI catalog (same raw token rates, consolidated Azure bill)</td>
+          </tr>
+          <tr>
+            <td><strong>Idle Minimum Monthly Cost</strong></td>
+            <td><span class="badge badge-yellow">~$5.00 - $7.00 / mo</span> (Disk + IP even if 0 hours run!)</td>
+            <td><span class="badge badge-red">~$38.00 / mo</span></td>
+            <td><span class="badge badge-green">&lt; $0.50 / mo</span> (Zero idle compute fees)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout warning">
+        <strong>Important Cost Trap on Azure VPS:</strong> When an Azure VM is stopped/deallocated with Auto-Shutdown, you <strong>do not pay for CPU/RAM</strong>, but you <strong>CONTINUE paying 24/7 for the Managed OS Disk</strong> (~$4.80 - $9.60/mo) and any reserved static IP addresses!
+      </div>
+    </section>
+
+    <!-- Section 3: Feature Matrix -->
+    <section class="card">
+      <h2>3. Feature Comparison Matrix</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Feature / Capability</th>
+            <th>Azure VPS (Auto-Stop + AGY/Grok)</th>
+            <th>Azure AI Foundry</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Full Shell & OS Control</strong></td>
+            <td><span class="badge badge-green">Yes</span> Full root/sudo, custom CLI tools, any binary/script.</td>
+            <td><span class="badge badge-yellow">Restricted</span> Managed sandbox (Code Interpreter / OpenAPI tools).</td>
+          </tr>
+          <tr>
+            <td><strong>Developer Workflow Automation</strong></td>
+            <td><span class="badge badge-green">High</span> Run agy, git hooks, shell pipelines, local test suites.</td>
+            <td><span class="badge badge-yellow">Medium</span> Focused on conversational agent APIs and prompt flows.</td>
+          </tr>
+          <tr>
+            <td><strong>External API Serving for Apps</strong></td>
+            <td><span class="badge badge-red">Difficult</span> Auto-stopped VM cannot respond to inbound webhook/app calls without spinning up first (1-3 min cold boot).</td>
+            <td><span class="badge badge-green">Native</span> Sub-second serverless REST/gRPC endpoints active 24/7.</td>
+          </tr>
+          <tr>
+            <td><strong>Multi-User Concurrency</strong></td>
+            <td><span class="badge badge-red">Single-user / Bottlenecked</span> One CLI session or single-process agent queue.</td>
+            <td><span class="badge badge-green">Massive Scale</span> Thousands of concurrent user threads managed automatically.</td>
+          </tr>
+          <tr>
+            <td><strong>Maintenance Overhead</strong></td>
+            <td><span class="badge badge-red">High</span> OS patching, disk cleanup, SSH keys, start/stop script orchestration.</td>
+            <td><span class="badge badge-green">Zero</span> 100% managed by Microsoft Azure.</td>
+          </tr>
+          <tr>
+            <td><strong>Enterprise Security & Evals</strong></td>
+            <td>Manual firewall rules; no built-in prompt safety filters.</td>
+            <td><span class="badge badge-green">Enterprise</span> Content Safety, Jailbreak Shields, OpenTelemetry Tracing, Private Link.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Section 4: Summary & Verdict -->
+    <section class="card">
+      <h2>4. The Verdict: Which One Should You Pick?</h2>
+
+      <div class="grid-2">
+        <div class="feature-box">
+          <h4>Choose Azure VPS (Auto-Stop) If:</h4>
+          <ul>
+            <li>You want a <strong>cloud development box</strong> to run AGY CLI, long-running batch scripts, or heavy background coding without draining your local laptop battery.</li>
+            <li>You need arbitrary OS commands, Docker, and full Linux terminal tools that managed agent platforms restrict.</li>
+            <li>Expected cost: <strong>~$6 to $15/month</strong> (including disk + part-time runtime).</li>
+          </ul>
+        </div>
+
+        <div class="feature-box">
+          <h4>Choose Azure AI Foundry If:</h4>
+          <ul>
+            <li>You are building an <strong>AI Agent service</strong> that users, microservices, or frontend web apps will interact with asynchronously 24/7.</li>
+            <li>You want zero server maintenance, automated multi-turn thread memory, and pay-as-you-go serverless scaling.</li>
+            <li>Expected idle cost: <strong>&lt; $0.50/month</strong>, scaling strictly per token.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <p>Published via GitHub Pages &bull; Azure AI Foundry Agent Reference &bull; <a href="https://github.com/rifaterdemsahin/azure-foundry" target="_blank">GitHub Repository</a></p>
+  </footer>
+
+</body>
+</html>
