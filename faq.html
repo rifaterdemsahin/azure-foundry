@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Frequently Asked Questions — Azure AI Foundry</title>
+  <style>
+    :root {
+      --primary: #0078d4;
+      --primary-dark: #005a9e;
+      --accent: #50e6ff;
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --code-bg: #0b1120;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 0;
+    }
+
+    header {
+      background: linear-gradient(135deg, #002050 0%, #0078d4 100%);
+      padding: 3rem 2rem;
+      border-bottom: 1px solid var(--card-border);
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      margin-bottom: 0.75rem;
+      color: #fff;
+    }
+
+    header p {
+      color: #cbd5e1;
+      font-size: 1.1rem;
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    nav {
+      background: #0b1120;
+      padding: 0.75rem 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    nav a {
+      color: var(--accent);
+      font-weight: 500;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .card h2 {
+      color: var(--accent);
+      font-size: 1.6rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid var(--card-border);
+      padding: 1.5rem 0;
+    }
+
+    .faq-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .faq-item h3 {
+      color: #f1f5f9;
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    p, ul, ol {
+      margin-bottom: 1rem;
+      color: #cbd5e1;
+    }
+
+    ul, ol {
+      padding-left: 1.5rem;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .feature-box {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+
+    .feature-box h4 {
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-right: 0.3rem;
+    }
+
+    .badge-green { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .badge-yellow { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+    .badge-blue { background: rgba(0, 120, 212, 0.2); color: #60a5fa; border: 1px solid rgba(0, 120, 212, 0.4); }
+    .badge-red { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+
+    .callout {
+      border-left: 4px solid var(--primary);
+      background: rgba(0, 120, 212, 0.1);
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.25rem 0;
+    }
+
+    .callout.warning {
+      border-left-color: var(--warning);
+      background: rgba(245, 158, 11, 0.1);
+    }
+
+    .callout.info {
+      border-left-color: var(--accent);
+      background: rgba(80, 230, 255, 0.1);
+    }
+
+    code {
+      background: #0b1120;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      color: var(--accent);
+      font-size: 0.9em;
+      border: 1px solid #1e293b;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--card-border);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Azure AI Foundry FAQ</h1>
+    <p>Frequently asked questions on codebase updates, agent capabilities, tooling limits, and enterprise integrations.</p>
+  </header>
+
+  <nav>
+    <a href="index.html">&larr; Overview & Cost Architecture</a>
+    <a href="foundry-vs-local-agents.html">Foundry vs. Local Agents</a>
+    <a href="azure-vps-vs-foundry.html">Azure VPS vs. Foundry</a>
+    <a href="faq.html" style="font-weight: bold; color: #fff;">FAQ</a>
+    <a href="https://github.com/rifaterdemsahin/azure-foundry" target="_blank">GitHub Repo</a>
+  </nav>
+
+  <div class="container">
+
+    <section class="card">
+      <h2>💡 Core Questions & Answers</h2>
+
+      <!-- Question 1: Codebase Updates -->
+      <div class="faq-item">
+        <h3>❓ Can I use Azure AI Foundry to do updates on my codebase?</h3>
+        
+        <p>
+          <span class="badge badge-yellow">Short Answer: Not Out-of-the-Box</span><br/>
+          Azure AI Foundry is <strong>not an interactive IDE coding assistant</strong> (like Antigravity / AGY, Cursor, or GitHub Copilot in VS Code). However, <strong>you can build autonomous CI/CD coding agents</strong> on top of Foundry using GitHub/Azure DevOps APIs.
+        </p>
+
+        <div class="grid-2">
+          <div class="feature-box">
+            <h4>❌ What Foundry Does NOT Do Natively:</h4>
+            <ul>
+              <li>It does not connect to your local filesystem or IDE workspace.</li>
+              <li>It cannot open your local editor, watch file edits, or run local compile/build commands directly on your Mac.</li>
+              <li>It doesn't have an interactive shell terminal for your local repo.</li>
+            </ul>
+          </div>
+
+          <div class="feature-box">
+            <h4>✅ How You CAN Use Foundry for Code Updates:</h4>
+            <ul>
+              <li><strong>GitHub / Azure DevOps OpenAPI Tools:</strong> Equipping a Foundry Agent with GitHub REST tools allows it to clone repos, create branches, generate code diffs, and submit Pull Requests automatically.</li>
+              <li><strong>Code Interpreter Tool:</strong> Foundry agents can execute Python scripts in a serverless sandbox to analyze repos, refactor scripts, and produce downloadable zip files or PR patches.</li>
+              <li><strong>Custom Semantic Kernel / AutoGen Workflows:</strong> You can host a backend agent that listens to GitHub webhooks (e.g., on issue creation) and automatically writes fixes and creates PRs.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout info">
+          <strong>Best Tool for the Job:</strong>
+          <ul>
+            <li><strong>For live pair-programming & local repo updates:</strong> Use <code>Antigravity (AGY)</code>, <code>Grok</code>, or <code>Claude Code</code>.</li>
+            <li><strong>For automated cloud CI/CD bots (automated PRs, automated doc generators, issue triage):</strong> Build an agent hosted on <code>Azure AI Foundry</code>.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Question 2: Blank Resource Cost -->
+      <div class="faq-item">
+        <h3>❓ If I leave my Azure AI Foundry project completely empty, will I receive a surprise bill?</h3>
+        <p>
+          <span class="badge badge-green">No</span>. A blank AI Foundry project incurs <strong>under $0.50 – $1.00 / month</strong> in negligible storage fees (for Azure Blob config storage and Key Vault setup), provided you:
+        </p>
+        <ul>
+          <li>Deploy models under <strong>Pay-As-You-Go (Serverless)</strong> rather than <strong>Provisioned Throughput (PTU)</strong>.</li>
+          <li>Do not create an always-running <strong>Azure AI Search (Basic/Standard)</strong> cluster or dedicated VM compute instance.</li>
+        </ul>
+      </div>
+
+      <!-- Question 3: Replacing OpenAI Assistants API -->
+      <div class="faq-item">
+        <h3>❓ Is Azure AI Agent Service a replacement for OpenAI Assistants API?</h3>
+        <p>
+          <span class="badge badge-green">Yes, with Enterprise Enhancements</span>. Azure AI Agent Service implements the Assistants API model (threads, runs, assistants, messages) while adding:
+        </p>
+        <ul>
+          <li>Multi-model capability (OpenAI + Meta Llama + Mistral + DeepSeek + Phi-4).</li>
+          <li>Azure Private VNet endpoints and enterprise RBAC.</li>
+          <li>Direct integration with Azure AI Search (Hybrid vector + keyword search over enterprise documents).</li>
+          <li>Grounding with Bing Search with enterprise security controls.</li>
+        </ul>
+      </div>
+
+      <!-- Question 4: Connecting Enterprise Data -->
+      <div class="faq-item">
+        <h3>❓ How do AI Agents in Foundry access proprietary company data?</h3>
+        <p>
+          Foundry provides native <strong>Knowledge Base & RAG integration</strong> with <strong>Azure AI Search</strong>, <strong>Microsoft Fabric OneLake</strong>, and <strong>Azure Blob Storage</strong>. You can vectorize documents directly inside the Foundry portal or connect pre-indexed vector stores without writing custom embedding ingestion pipelines.
+        </p>
+      </div>
+
+    </section>
+
+  </div>
+
+  <footer>
+    <p>Published via GitHub Pages &bull; Azure AI Foundry Agent Reference &bull; <a href="https://github.com/rifaterdemsahin/azure-foundry" target="_blank">GitHub Repository</a></p>
+  </footer>
+
+</body>
+</html>
