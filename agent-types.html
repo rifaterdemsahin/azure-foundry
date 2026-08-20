@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>What Kind of AI Agents Can You Build in Azure AI Foundry?</title>
+  <style>
+    :root {
+      --primary: #0078d4;
+      --primary-dark: #005a9e;
+      --accent: #50e6ff;
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --code-bg: #0b1120;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 0;
+    }
+
+    header {
+      background: linear-gradient(135deg, #002050 0%, #0078d4 100%);
+      padding: 3rem 2rem;
+      border-bottom: 1px solid var(--card-border);
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      margin-bottom: 0.75rem;
+      color: #fff;
+    }
+
+    header p {
+      color: #cbd5e1;
+      font-size: 1.1rem;
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    nav {
+      background: #0b1120;
+      padding: 0.75rem 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    nav a {
+      color: var(--accent);
+      font-weight: 500;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .card h2 {
+      color: var(--accent);
+      font-size: 1.6rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card h3 {
+      color: #e2e8f0;
+      font-size: 1.2rem;
+      margin: 1.2rem 0 0.5rem;
+    }
+
+    p, ul, ol {
+      margin-bottom: 1rem;
+      color: #cbd5e1;
+    }
+
+    ul, ol {
+      padding-left: 1.5rem;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .agent-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .agent-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .agent-icon {
+      font-size: 1.8rem;
+    }
+
+    .agent-title {
+      font-size: 1.2rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .tool-tags {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .badge-green { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .badge-yellow { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+    .badge-blue { background: rgba(0, 120, 212, 0.2); color: #60a5fa; border: 1px solid rgba(0, 120, 212, 0.4); }
+    .badge-purple { background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.4); }
+
+    .callout {
+      border-left: 4px solid var(--primary);
+      background: rgba(0, 120, 212, 0.1);
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.25rem 0;
+    }
+
+    .callout.info {
+      border-left-color: var(--accent);
+      background: rgba(80, 230, 255, 0.1);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      border: 1px solid var(--card-border);
+      padding: 0.85rem 1rem;
+      text-align: left;
+    }
+
+    th {
+      background: #0b1120;
+      color: var(--accent);
+    }
+
+    tr:nth-child(even) {
+      background: rgba(15, 23, 42, 0.4);
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--card-border);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>What Kind of AI Agents Can You Build in Azure AI Foundry?</h1>
+    <p>A catalog of production agent architectures, enterprise patterns, tool integrations, and real-world use cases.</p>
+  </header>
+
+  <nav>
+    <a href="index.html">&larr; Overview & Cost Architecture</a>
+    <a href="foundry-vs-local-agents.html">Foundry vs. Local Agents</a>
+    <a href="azure-vps-vs-foundry.html">Azure VPS vs. Foundry</a>
+    <a href="faq.html">FAQ</a>
+    <a href="agent-types.html" style="font-weight: bold; color: #fff;">Agent Catalog &rarr;</a>
+    <a href="https://github.com/rifaterdemsahin/azure-foundry" target="_blank">GitHub Repo</a>
+  </nav>
+
+  <div class="container">
+
+    <!-- Section 1: Introduction -->
+    <section class="card">
+      <h2>1. The 6 Major AI Agent Archetypes in Foundry</h2>
+      <p>
+        In Azure AI Foundry, an agent is more than a chatbot—it is an autonomous software entity equipped with <strong>reasoning models</strong>, <strong>persistent thread memory</strong>, and <strong>custom tool integrations</strong> (OpenAPI specs, Python Code Interpreter, Bing Search, and Azure AI Search).
+      </p>
+
+      <div class="grid-2">
+
+        <!-- Agent 1: RAG Knowledge Agent -->
+        <div class="agent-card">
+          <div>
+            <div class="agent-header">
+              <span class="agent-icon">📚</span>
+              <div class="agent-title">Enterprise Knowledge & RAG Agent</div>
+            </div>
+            <p>
+              Retrieves company policies, technical manuals, internal wikis, and PDF contracts with strict citations and zero hallucination guardrails.
+            </p>
+            <ul>
+              <li>Hybrid Vector + Full-text search with semantic reranking.</li>
+              <li>Document level security & Entra ID ACL enforcement.</li>
+            </ul>
+          </div>
+          <div class="tool-tags">
+            <span class="badge badge-blue">Azure AI Search</span>
+            <span class="badge badge-green">GPT-4o-mini / Phi-4</span>
+            <span class="badge badge-purple">Blob Storage</span>
+          </div>
+        </div>
+
+        <!-- Agent 2: Code Interpreter & Analytics Agent -->
+        <div class="agent-card">
+          <div>
+            <div class="agent-header">
+              <span class="agent-icon">📊</span>
+              <div class="agent-title">Data Analytics & Code Execution Agent</div>
+            </div>
+            <p>
+              Executes Python in secure micro-containers to analyze CSVs, generate matplotlib/seaborn charts, run statistical models, and parse log files.
+            </p>
+            <ul>
+              <li>Dynamic Python sandbox with standard data science libraries.</li>
+              <li>Generates downloadable reports, charts, and clean datasets.</li>
+            </ul>
+          </div>
+          <div class="tool-tags">
+            <span class="badge badge-yellow">Code Interpreter</span>
+            <span class="badge badge-green">GPT-4o</span>
+            <span class="badge badge-blue">Azure Fabric / SQL</span>
+          </div>
+        </div>
+
+        <!-- Agent 3: Action & API Integration Agent -->
+        <div class="agent-card">
+          <div>
+            <div class="agent-header">
+              <span class="agent-icon">⚙️</span>
+              <div class="agent-title">Action & API Orchestration Agent</div>
+            </div>
+            <p>
+              Takes real-world actions across enterprise SaaS apps (ServiceNow, Jira, Salesforce, Stripe, SAP) by interpreting OpenAPI Swagger specifications.
+            </p>
+            <ul>
+              <li>Reads Swagger endpoints and auto-generates REST calls.</li>
+              <li>Handles user authentication via Managed Identity / OAuth2.</li>
+            </ul>
+          </div>
+          <div class="tool-tags">
+            <span class="badge badge-purple">OpenAPI Tools</span>
+            <span class="badge badge-green">GPT-4o-mini</span>
+            <span class="badge badge-blue">Azure Logic Apps</span>
+          </div>
+        </div>
+
+        <!-- Agent 4: Autonomous Multi-Agent Swarm -->
+        <div class="agent-card">
+          <div>
+            <div class="agent-header">
+              <span class="agent-icon">🤖🤝🤖</span>
+              <div class="agent-title">Collaborative Multi-Agent Swarm</div>
+            </div>
+            <p>
+              A coordinator agent orchestrates specialized sub-agents (e.g. Researcher + Writer + Reviewer + Fact Checker) using Microsoft AutoGen or Semantic Kernel.
+            </p>
+            <ul>
+              <li>Hierarchical delegation and group-chat consensus loops.</li>
+              <li>Separation of concerns between planning and tool execution.</li>
+            </ul>
+          </div>
+          <div class="tool-tags">
+            <span class="badge badge-green">AutoGen / Semantic Kernel</span>
+            <span class="badge badge-yellow">o3-mini / GPT-4o</span>
+          </div>
+        </div>
+
+        <!-- Agent 5: Live Grounded Web Research Agent -->
+        <div class="agent-card">
+          <div>
+            <div class="agent-header">
+              <span class="agent-icon">🌐</span>
+              <div class="agent-title">Live Web Research & Market Intelligence</div>
+            </div>
+            <p>
+              Monitors competitor pricing, financial news, regulation filings, and live web data using real-time Bing search grounding.
+            </p>
+            <ul>
+              <li>Real-time web browsing with domain-filtered search queries.</li>
+              <li>Automated multi-source synthesis and fact cross-checking.</li>
+            </ul>
+          </div>
+          <div class="tool-tags">
+            <span class="badge badge-blue">Bing Search Tool</span>
+            <span class="badge badge-green">GPT-4o</span>
+            <span class="badge badge-purple">Content Safety</span>
+          </div>
+        </div>
+
+        <!-- Agent 6: CI/CD & DevOps Automation Agent -->
+        <div class="agent-card">
+          <div>
+            <div class="agent-header">
+              <span class="agent-icon">🚀</span>
+              <div class="agent-title">DevOps & Issue Triage Bot</div>
+            </div>
+            <p>
+              Asynchronously monitors GitHub / Azure DevOps issues, summarizes bug stack traces, proposes automated PR diffs, and triages alerts.
+            </p>
+            <ul>
+              <li>GitHub REST API integration to comment and create PRs.</li>
+              <li>Triggers automatically on webhook alerts without human standby.</li>
+            </ul>
+          </div>
+          <div class="tool-tags">
+            <span class="badge badge-purple">GitHub REST API</span>
+            <span class="badge badge-green">GPT-4o-mini / o3-mini</span>
+            <span class="badge badge-yellow">App Insights</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 2: Framework Options -->
+    <section class="card">
+      <h2>2. Orchestration Frameworks Supported in Foundry</h2>
+      <p>
+        Azure AI Foundry is framework-agnostic. You can deploy and orchestrate agents using:
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Framework</th>
+            <th>Best Suited For</th>
+            <th>Foundry Integration Method</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Azure AI Agent Service (Native)</strong></td>
+            <td>Out-of-the-box stateful agents with managed threads, built-in Code Interpreter, Bing Search, and Azure AI Search.</td>
+            <td><span class="badge badge-green">Native Portal & SDK</span> Python / C# / REST</td>
+          </tr>
+          <tr>
+            <td><strong>Microsoft AutoGen</strong></td>
+            <td>Complex multi-agent conversations, group chats, debate systems, and autonomous problem solvers.</td>
+            <td><span class="badge badge-blue">Azure AI Model Catalog</span> OpenAI/DeepSeek endpoints</td>
+          </tr>
+          <tr>
+            <td><strong>Microsoft Semantic Kernel</strong></td>
+            <td>Enterprise C# and Python applications requiring strict plugins, filters, memory stores, and planners.</td>
+            <td><span class="badge badge-blue">Native Azure Connector</span> Enterprise SDK</td>
+          </tr>
+          <tr>
+            <td><strong>LangChain & LlamaIndex</strong></td>
+            <td>Community pipelines, advanced RAG chunking strategies, and multi-vector retrieval algorithms.</td>
+            <td><span class="badge badge-purple">Azure OpenAI / AI Search</span> Native integrations</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Section 3: Summary Callout -->
+    <section class="card">
+      <h2>3. Quick Architecture Recommendation</h2>
+      <div class="callout info">
+        <strong>Where should you start?</strong><br/>
+        Start with the <strong>Native Azure AI Agent Service</strong> in the Foundry portal. It gives you instant access to multi-model switching, serverless Code Interpreter, Bing Search grounding, and thread persistence with <strong>zero server provisioning</strong>!
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <p>Published via GitHub Pages &bull; Azure AI Foundry Agent Reference &bull; <a href="https://github.com/rifaterdemsahin/azure-foundry" target="_blank">GitHub Repository</a></p>
+  </footer>
+
+</body>
+</html>
