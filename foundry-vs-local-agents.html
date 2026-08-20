@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Azure AI Foundry vs Local AI Agents (AGY, Grok, Claude Desktop)</title>
+  <style>
+    :root {
+      --primary: #0078d4;
+      --primary-dark: #005a9e;
+      --accent: #50e6ff;
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --code-bg: #0b1120;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 0;
+    }
+
+    header {
+      background: linear-gradient(135deg, #002050 0%, #0078d4 100%);
+      padding: 3rem 2rem;
+      border-bottom: 1px solid var(--card-border);
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      margin-bottom: 0.75rem;
+      color: #fff;
+    }
+
+    header p {
+      color: #cbd5e1;
+      font-size: 1.1rem;
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    nav {
+      background: #0b1120;
+      padding: 0.75rem 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    nav a {
+      color: var(--accent);
+      font-weight: 500;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .card h2 {
+      color: var(--accent);
+      font-size: 1.6rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card h3 {
+      color: #e2e8f0;
+      font-size: 1.2rem;
+      margin: 1.2rem 0 0.5rem;
+    }
+
+    p, ul, ol {
+      margin-bottom: 1rem;
+      color: #cbd5e1;
+    }
+
+    ul, ol {
+      padding-left: 1.5rem;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .feature-box {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+
+    .feature-box h4 {
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      border: 1px solid var(--card-border);
+      padding: 0.85rem 1rem;
+      text-align: left;
+    }
+
+    th {
+      background: #0b1120;
+      color: var(--accent);
+    }
+
+    tr:nth-child(even) {
+      background: rgba(15, 23, 42, 0.4);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-right: 0.3rem;
+    }
+
+    .badge-green { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .badge-yellow { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+    .badge-blue { background: rgba(0, 120, 212, 0.2); color: #60a5fa; border: 1px solid rgba(0, 120, 212, 0.4); }
+    .badge-red { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+
+    .callout {
+      border-left: 4px solid var(--primary);
+      background: rgba(0, 120, 212, 0.1);
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.25rem 0;
+    }
+
+    .callout.info {
+      border-left-color: var(--accent);
+      background: rgba(80, 230, 255, 0.1);
+    }
+
+    .callout.warning {
+      border-left-color: var(--warning);
+      background: rgba(245, 158, 11, 0.1);
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--card-border);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Azure AI Foundry vs. Local AI Agents</h1>
+    <p>What can you build and operate in Azure AI Foundry that is impossible or impractical with local agents like Antigravity (AGY), Grok, or Claude Desktop?</p>
+  </header>
+
+  <nav>
+    <a href="index.html">&larr; Overview & Cost Architecture</a>
+    <a href="foundry-vs-local-agents.html" style="font-weight: bold; color: #fff;">Foundry vs. Local Agents</a>
+    <a href="https://github.com/rifaterdemsahin/azure-foundry" target="_blank">GitHub Repo</a>
+  </nav>
+
+  <div class="container">
+
+    <!-- Section 1: Executive Summary -->
+    <section class="card">
+      <h2>1. The Fundamental Distinction</h2>
+      <p>
+        <strong>Local AI Agents (AGY CLI, Grok, Claude Desktop, Cursor)</strong> are <em>client-side developer productivity assistants</em> running on your laptop. They act on your personal machine, terminal, and local workspace.
+      </p>
+      <p>
+        <strong>Azure AI Foundry</strong> is an <em>enterprise multi-tenant AI operating platform</em>. It is designed to deploy, host, secure, evaluate, and scale 24/7 autonomous agents serving thousands of end users, SaaS applications, and enterprise microservices.
+      </p>
+
+      <div class="callout info">
+        <strong>The Core Metaphor:</strong> A local agent (like AGY or Claude Desktop) is your personal pilot pair-programming next to you in the cockpit. Azure AI Foundry is the entire international airport, control tower, and fleet management system.
+      </div>
+    </section>
+
+    <!-- Section 2: What Foundry Can Do That Local Agents Cannot -->
+    <section class="card">
+      <h2>2. What You Can Do in Azure AI Foundry (That Local Agents Cannot)</h2>
+
+      <div class="grid-2">
+        <div class="feature-box">
+          <h4>🌐 1. Serverless 24/7 Hosting & Public Endpoints</h4>
+          <p>
+            Local agents terminate when your laptop sleeps or terminal closes. Foundry hosts stateful agents as persistent, secure REST/gRPC endpoints with automated 99.9% SLAs that your customers or web apps can call at any time.
+          </p>
+        </div>
+
+        <div class="feature-box">
+          <h4>🔒 2. Enterprise Network & Zero-Trust Isolation</h4>
+          <p>
+            Foundry connects directly to Azure Virtual Networks (VNets), Private Endpoints, Customer-Managed Keys (CMK), and Microsoft Entra ID RBAC. Local agents cannot meet SOC2, HIPAA, or banking data compliance without custom cloud infrastructure.
+          </p>
+        </div>
+
+        <div class="feature-box">
+          <h4>⚡ 3. Multi-User Shared Thread & Memory Persistence</h4>
+          <p>
+            Azure AI Agent Service manages multi-turn conversation threads across millions of concurrent users with managed serverless storage. Local agents only maintain single-user session files on disk.
+          </p>
+        </div>
+
+        <div class="feature-box">
+          <h4>🔀 4. Hybrid Multi-Model Routing & Provisioned Throughput</h4>
+          <p>
+            In Foundry, you can swap between OpenAI (GPT-4o, o3-mini), DeepSeek R1, Meta Llama 3.3, and Phi-4 SLMs on the fly with Provisioned Throughput (PTU) guarantees—eliminating rate limits under high concurrency.
+          </p>
+        </div>
+
+        <div class="feature-box">
+          <h4>🛡️ 5. Automated Content Safety & Prompt Injection Shields</h4>
+          <p>
+            Every prompt and agent output can be filtered automatically through Azure AI Content Safety (jailbreak detection, PII redacting, hate speech filtering, hallucination grounding) before reaching the user.
+          </p>
+        </div>
+
+        <div class="feature-box">
+          <h4>📈 6. LLM-Ops: Evaluation Suites & OpenTelemetry Tracing</h4>
+          <p>
+            Run automated CI/CD benchmark evaluations across hundreds of test prompts (Groundedness, Relevance, Coherence) and trace multi-agent tool execution trees in Azure Application Insights.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Detailed Comparison Matrix -->
+    <section class="card">
+      <h2>3. Direct Comparison Matrix</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Capability</th>
+            <th>Local AI Agent (AGY / Grok / Claude Desktop)</th>
+            <th>Azure AI Foundry (Cloud Platform)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Primary Purpose</strong></td>
+            <td>Individual developer productivity, local refactoring, scripts, terminal automation.</td>
+            <td>Building, deploying, and governing multi-user AI products & enterprise microservices.</td>
+          </tr>
+          <tr>
+            <td><strong>Runtime Availability</strong></td>
+            <td><span class="badge badge-yellow">Local Only</span> Runs on user's machine; stops when machine goes offline.</td>
+            <td><span class="badge badge-green">24/7 Managed Cloud</span> Serverless scalable API endpoints with enterprise uptime.</td>
+          </tr>
+          <tr>
+            <td><strong>Concurrency & Multi-tenancy</strong></td>
+            <td><span class="badge badge-red">Single-user</span> (1 developer at a time).</td>
+            <td><span class="badge badge-green">High Concurrency</span> (Handles thousands of simultaneous end-user threads).</td>
+          </tr>
+          <tr>
+            <td><strong>Model Access</strong></td>
+            <td>Tied to specific API key or local model (Ollama / Claude / Grok).</td>
+            <td>Unified Catalog: OpenAI, DeepSeek, Meta Llama, Mistral, Cohere, and Phi SLMs.</td>
+          </tr>
+          <tr>
+            <td><strong>Data Privacy & Compliance</strong></td>
+            <td>Dependent on individual client API terms; local file system access.</td>
+            <td>HIPAA, FedRAMP, SOC2, Zero-Data Retention agreements, Azure Private Link.</td>
+          </tr>
+          <tr>
+            <td><strong>Tool Execution Sandboxing</strong></td>
+            <td>Executes on host OS directly or local shell (elevated local risk).</td>
+            <td>Isolated Azure Code Interpreter micro-containers and secure OpenAPI connectors.</td>
+          </tr>
+          <tr>
+            <td><strong>CI/CD & Benchmark Evals</strong></td>
+            <td>Ad-hoc prompt testing.</td>
+            <td>Automated test pipelines, groundedness scoring, prompt versioning & A/B routing.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Section 4: When Should You Use Which? -->
+    <section class="card">
+      <h2>4. Decision Guide: When to Use Which?</h2>
+
+      <div class="grid-2">
+        <div class="feature-box">
+          <h4>Use Local Agents (AGY, Claude, Grok) When:</h4>
+          <ul>
+            <li>You are writing, refactoring, or debugging code on your laptop.</li>
+            <li>You need rapid local command-line and git workflow automation.</li>
+            <li>You want immediate scratchpad analysis without setting up cloud infrastructure.</li>
+            <li>You are doing individual research and single-developer pair programming.</li>
+          </ul>
+        </div>
+
+        <div class="feature-box">
+          <h4>Use Azure AI Foundry When:</h4>
+          <ul>
+            <li>You are building an AI agent feature for your SaaS product or mobile app.</li>
+            <li>You need multiple autonomous agents collaborating in a multi-user backend.</li>
+            <li>You need enterprise data integration (Azure AI Search, Fabric, SharePoint, SQL).</li>
+            <li>Your compliance team requires Private VNet isolation, audit logs, and zero training retention.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout">
+        <strong>Best-of-Both Approach:</strong> Use <strong>AGY / Local AI Agents</strong> to write your application code and define your agent logic, then deploy and orchestrate those agents into <strong>Azure AI Foundry</strong> for production serving!
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <p>Published via GitHub Pages &bull; Azure AI Foundry Agent Reference &bull; <a href="https://github.com/rifaterdemsahin/azure-foundry" target="_blank">GitHub Repository</a></p>
+  </footer>
+
+</body>
+</html>

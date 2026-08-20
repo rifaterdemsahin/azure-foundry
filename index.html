@@ -54,6 +54,26 @@
       margin: 0 auto;
     }
 
+    nav {
+      background: #0b1120;
+      padding: 0.75rem 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    nav a {
+      color: var(--accent);
+      font-weight: 500;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
     .container {
       max-width: 1100px;
       margin: 2rem auto;
@@ -199,6 +219,12 @@
     <p>A comprehensive guide on building enterprise AI agents, comparing ecosystems, and demystifying Azure AI cost build-up.</p>
   </header>
 
+  <nav>
+    <a href="index.html" style="font-weight: bold; color: #fff;">Overview & Cost Architecture</a>
+    <a href="foundry-vs-local-agents.html">Foundry vs. Local Agents (AGY, Grok, Claude) &rarr;</a>
+    <a href="https://github.com/rifaterdemsahin/azure-foundry" target="_blank">GitHub Repo</a>
+  </nav>
+
   <div class="container">
 
     <!-- Section 1: Why Azure AI Foundry -->
@@ -230,7 +256,7 @@
 
     <!-- Section 2: Competitive Comparison -->
     <section class="card">
-      <h2>2. Azure AI Foundry vs Competitors</h2>
+      <h2>2. Azure AI Foundry vs Cloud Competitors</h2>
       <p>A comparison of major enterprise agent platforms:</p>
 
       <table>
