@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily AI Video Agent Plan — Markdown Renderer</title>
+  <!-- Marked for markdown rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- Mermaid for diagrams -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --primary: #0078d4;
+      --primary-dark: #005a9e;
+      --accent: #50e6ff;
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --code-bg: #0b1120;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 0;
+    }
+
+    header {
+      background: linear-gradient(135deg, #002050 0%, #0078d4 100%);
+      padding: 2.5rem 2rem;
+      border-bottom: 1px solid var(--card-border);
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+      color: #fff;
+    }
+
+    header p {
+      color: #cbd5e1;
+      font-size: 1.05rem;
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    nav {
+      background: #0b1120;
+      padding: 0.75rem 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    nav a {
+      color: var(--accent);
+      font-weight: 500;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+
+    #content {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 2.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Markdown styling */
+    #content h1 {
+      color: #fff;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 0.5rem;
+    }
+
+    #content h2 {
+      color: var(--accent);
+      font-size: 1.5rem;
+      margin: 1.75rem 0 1rem;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+      padding-bottom: 0.4rem;
+    }
+
+    #content h3 {
+      color: #e2e8f0;
+      font-size: 1.2rem;
+      margin: 1.25rem 0 0.5rem;
+    }
+
+    #content p, #content ul, #content ol {
+      margin-bottom: 1rem;
+      color: #cbd5e1;
+    }
+
+    #content ul, #content ol {
+      padding-left: 1.5rem;
+    }
+
+    #content li {
+      margin-bottom: 0.4rem;
+    }
+
+    #content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+    }
+
+    #content th, #content td {
+      border: 1px solid var(--card-border);
+      padding: 0.75rem 1rem;
+      text-align: left;
+    }
+
+    #content th {
+      background: #0b1120;
+      color: var(--accent);
+    }
+
+    #content tr:nth-child(even) {
+      background: rgba(15, 23, 42, 0.4);
+    }
+
+    #content code {
+      background: #0b1120;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      color: var(--accent);
+      font-size: 0.9em;
+      border: 1px solid #1e293b;
+      font-family: Consolas, Monaco, 'Courier New', monospace;
+    }
+
+    #content pre {
+      background: #0b1120;
+      padding: 1.25rem;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      overflow-x: auto;
+      margin: 1rem 0;
+    }
+
+    #content pre code {
+      background: none;
+      padding: 0;
+      border: none;
+      color: #f8fafc;
+    }
+
+    #content hr {
+      border: 0;
+      height: 1px;
+      background: var(--card-border);
+      margin: 2rem 0;
+    }
+
+    .mermaid {
+      background: #0b1120;
+      padding: 1.5rem;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      text-align: center;
+      margin: 1.5rem 0;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--card-border);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Daily AI Video Agent Plan</h1>
+    <p>Rendered Markdown Plan & Execution Architecture with $5.00/Month Cost Cap</p>
+  </header>
+
+  <nav>
+    <a href="index.html">&larr; Overview & Cost Architecture</a>
+    <a href="foundry-vs-local-agents.html">Foundry vs. Local Agents</a>
+    <a href="azure-vps-vs-foundry.html">Azure VPS vs. Foundry</a>
+    <a href="faq.html">FAQ</a>
+    <a href="agent-types.html">Agent Catalog</a>
+    <a href="markdown_renderer.html" style="font-weight: bold; color: #fff;">Agent Plan &rarr;</a>
+    <a href="https://github.com/rifaterdemsahin/azure-foundry" target="_blank">GitHub Repo</a>
+  </nav>
+
+  <div class="container">
+    <div id="content">Loading plan...</div>
+  </div>
+
+  <footer>
+    <p>Published via GitHub Pages &bull; Azure AI Foundry Agent Reference &bull; <a href="https://github.com/rifaterdemsahin/azure-foundry" target="_blank">GitHub Repository</a></p>
+  </footer>
+
+  <script>
+    mermaid.initialize({ startOnLoad: false, theme: 'dark' });
+
+    const rawMarkdown = `# Plan: Daily AI Popular Videos Curator Agent (Strict $5/Month Cost Cap)
+
+## 🎯 Objective
+Build a lightweight, autonomous daily agent that discovers, filters, ranks, and summarizes the top trending AI videos every day (from YouTube / X / web), publishes a clean daily digest page on the site, and stays strictly under a **$5.00 / month total budget**.
+
+---
+
+## 💰 1. Strict Cost Cap Architecture (< $5.00 / month)
+
+### Daily Budget vs Monthly Cap:
+- **Monthly Budget Cap:** \`$5.00 / month\`
+- **Daily Budget Limit:** \`$5.00 / 30 days = $0.166 / day\`
+
+### Cost Breakdown per Component:
+| Service / Resource | Allocation | Monthly Cost | Rationale |
+| :--- | :--- | :--- | :--- |
+| **Azure AI Foundry (GPT-4o-mini)** | ~8,000 input + 1,200 output tokens/day | **~$0.07 / month** | \`GPT-4o-mini\` costs $0.15/1M input & $0.60/1M output. Incurring ~270k tokens/mo costs pennies. |
+| **Search / Video Data Source** | YouTube Data API v3 (10k units free/day) OR Curated RSS Feeds | **$0.00 / month** | YouTube Data API v3 has a **10,000 units/day free quota** (1 search = 100 units = 100 searches/day free). |
+| **Execution Scheduler & Runner** | GitHub Actions (\`cron: '0 8 * * *'\`) | **$0.00 / month** | 2,000 free runner minutes/month for public repositories. 1 daily run = ~1 min/day = 30 mins/mo. |
+| **Publishing / Hosting** | GitHub Pages (\`index.html\` / \`videos.html\` / \`data/daily-videos.json\`) | **$0.00 / month** | Free static web hosting. |
+| **Azure Storage & Metadata** | Azure Blob / Foundry project default | **~$0.10 / month** | Standard baseline storage for project metadata. |
+| **Safety Margin / Buffer** | Token spikes or multi-retries | **$4.83 / month** | Unused cushion ensuring cost never exceeds $5.00. |
+| **TOTAL ESTIMATED MONTHLY COST** | — | **~$0.17 – $0.50 / month** | **Well under $5.00 cap!** |
+
+---
+
+## 🛠️ 2. Architectural Blueprint & Daily Workflow
+
+\`\`\`mermaid
+flowchart TD
+    A["⏰ GitHub Actions Cron (Daily at 08:00 UTC)"] --> B["📥 Fetch Trending AI Videos (YouTube API / RSS / Search)"]
+    B --> C["🤖 Azure AI Foundry Agent (GPT-4o-mini via Azure AI Inference SDK)"]
+    C --> D["✨ Agent Task: Filter clickbait, summarize value, rank top 5"]
+    D --> E["💾 Save Structured JSON (data/daily-videos.json)"]
+    E --> F["🌐 Render / Update Web UI (videos.html)"]
+    F --> G["🚀 Git Commit, Push & Deploy to GitHub Pages"]
+\`\`\`
+
+---
+
+## 📋 3. Step-by-Step Implementation Plan
+
+### Phase 1: Web Interface & Data Layer (\`videos.html\` & \`data/daily-videos.json\`)
+- [ ] Create \`videos.html\` with a modern, responsive daily video dashboard showing:
+  - Video title, thumbnail, creator channel, view counts, publish date, and direct video link.
+  - AI-generated 2-bullet takeaway/summary of why it's trending and worth watching.
+  - Interactive search/filtering tags (e.g. \`#LLMs\`, \`#Agents\`, \`#Foundry\`, \`#Tutorial\`).
+- [ ] Create an initial JSON dataset \`data/daily-videos.json\` storing structured video items.
+- [ ] Link \`videos.html\` across all site navigation bars.
+
+### Phase 2: Python Daily Curator Agent (\`scripts/curate_videos.py\`)
+- [ ] Write a clean, modular Python script:
+  1. **Fetch:** Pulls recent popular AI videos using YouTube Data API v3 (or fallback curated RSS feeds if no API key is provided).
+  2. **Analyze & Rank (Azure AI Foundry):** Sends candidate list to \`GPT-4o-mini\` endpoint using Azure AI Inference SDK / OpenAI client.
+  3. **Strict Prompt Guardrails:** Formats into clean JSON containing:
+     - \`title\`, \`url\`, \`thumbnail\`, \`channel\`, \`views\`, \`summary\`, \`tags\`, \`curated_date\`.
+  4. **Cost Hard-Cap Guardrail:** The script calculates token usage and aborts immediately if tokens exceed the daily $0.16 safety limit.
+  5. **Write:** Merges new items into \`data/daily-videos.json\` and updates timestamp.
+
+### Phase 3: Automated Daily Schedule (\`.github/workflows/daily-video-curator.yml\`)
+- [ ] Configure a GitHub Actions workflow:
+  - Runs on schedule: \`0 8 * * *\` (Every day at 8:00 AM UTC).
+  - Can also be triggered manually via \`workflow_dispatch\`.
+  - Injects \`AZURE_AI_ENDPOINT\`, \`AZURE_AI_API_KEY\` (or fallback keys) from GitHub Secrets.
+  - Commits updated \`daily-videos.json\` and auto-deploys to GitHub Pages.
+
+### Phase 4: Local Test & Deployment Verification
+- [ ] Run the curation script locally to generate the first batch of trending AI videos.
+- [ ] Build, commit, push, and deploy to GitHub Pages.
+- [ ] Verify the live page in Google Chrome.
+
+---
+
+## 🔒 4. Budget & Safety Controls
+1. **Model Enforcement:** Hardcode model to \`gpt-4o-mini\` (never accidentally call PTU or full \`gpt-4o\`).
+2. **Rate & Token Limit:** Hard-limit output tokens to \`1,000\` max per run.
+3. **Execution Limit:** 1 scheduled run per 24 hours.
+4. **Zero Compute Spend:** No always-on VM or Azure App Service—utilize GitHub Actions runner (free) + Azure AI Serverless Pay-As-You-Go.`;
+
+    const contentDiv = document.getElementById('content');
+    
+    // Custom renderer for mermaid blocks
+    const renderer = new marked.Renderer();
+    const originalCodeRenderer = renderer.code.bind(renderer);
+    
+    renderer.code = function(code, language) {
+      if (language === 'mermaid') {
+        return '<div class="mermaid">' + code + '</div>';
+      }
+      return originalCodeRenderer(code, language);
+    };
+
+    marked.setOptions({ renderer: renderer });
+    contentDiv.innerHTML = marked.parse(rawMarkdown);
+
+    mermaid.run({
+      nodes: document.querySelectorAll('.mermaid')
+    });
+  </script>
+
+</body>
+</html>
